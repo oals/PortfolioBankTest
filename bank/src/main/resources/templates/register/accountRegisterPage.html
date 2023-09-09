@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout" >
+<link href="../../static/bootstrap/css/bootstrap.min.css"
+      th:href="@{/bootstrap/css/bootstrap.min.css}"  rel="stylesheet" >
+<script src="../../static/bootstrap/js/bootstrap.bundle.min.js"
+        th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<link href="css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet" />
+
+<body>
+
+<div th:replace="fragments/header::Main_header"></div>
+
+<hr>
+
+<div class="d-flex justify-content-center">
+
+
+    <div class="card w-50">
+        <span class="text-center mt-2"><strong>계좌 등록</strong></span>
+        <form action="/accountregister" method="post" id="fm">
+
+        <div class="m-3  mb-2 col-12 w-75">
+            <select class="form-select mb-3" name="accountName"  id="accountName" aria-label="Default select example">
+                <option th:value="신한은행">신한은행</option>
+                <option th:vlaue="새마을금고">새마을금고</option>
+                <option th:vlaue="부산은행">부산은행</option>
+            </select>
+        </div>
+
+        <div class="m-3 mt-2 col-12 w-50 input-group mt-1">
+            <span class="input-group-text" id="basic-addon1">계좌번호 16자리 </span>
+            <input type="text" class="form-control" maxlength="16"  placeholder="계좌번호" aria-label="Username" aria-describedby="basic-addon1" name="accountNumber" id="accountNumber">
+        </div>
+
+        <div class="m-3 mt-2 col-12 w-50 input-group mt-1">
+            <span class="input-group-text" id="basic-addon2">사용할 비밀번호 4자리</span>
+            <input type="text" class="form-control" maxlength="4"  placeholder="비밀번호 4자리" aria-label="Username" aria-describedby="basic-addon2" name="accountPswd" id="accountPswd">
+        </div>
+
+
+        <div class="m-1 col-12 w-100 text-center">
+            <button type="submit" class="btn btn-secondary" id="btn">계좌 등록</button>
+        </div>
+
+
+        <input type="hidden" name="memberId" id="memberId" th:value="${#authentication.principal.username}">
+
+        </form>
+    </div>
+</div>
+
+
+
+
+
+<div th:replace="fragments/footer::footer"></div>
+<script
+        src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous"></script>
+<script  th:inline="javascript">
+
+    $('#btn').click(function(e){
+
+    let accountNumber = $('#accountNumber').val()
+    let accountPswd = $('#accountPswd').val()
+    let form = $('#fm')
+
+    e.preventDefault()
+
+    if(accountNumber.length != 16){
+        alert('계좌번호 16자리를 입력해주세요.')
+        return;
+    }
+
+    if(accountPswd.length != 4){
+        alert('사용할 비밀번호 4자리를 입력해주세요.')
+        return;
+    }
+
+
+    $.ajax({
+        type : 'GET',
+        url : '/AccountRegisterCheck',
+        dataType : 'text',
+        data : {
+            accountNumber : accountNumber
+
+        },success:function(data){
+
+            if(data == 'true'){
+
+                alert('이미 등록된 계좌 입니다')
+            }else{
+                form.submit();
+            }
+
+        },error:function(data){
+            alert('실패')
+        }
+
+    })
+
+
+
+
+    })
+
+
+
+</script>
+
+</body>
+</html>

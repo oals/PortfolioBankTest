@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout" >
+<link href="../../static/bootstrap/css/bootstrap.min.css"
+      th:href="@{/bootstrap/css/bootstrap.min.css}"  rel="stylesheet" >
+<script src="../../static/bootstrap/js/bootstrap.bundle.min.js"
+        th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<link href="css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet" />
+
+<body>
+
+<div th:replace="fragments/header::Main_header"></div>
+
+<div class="container">
+
+    <form action="/register" method="post" enctype="application/x-www-form-urlencoded;charset=UTF-8">
+      <div class="d-flex justify-content-center">
+
+
+      <div class=" w-25 align-items-start mt-3 mb-3">
+
+          <div class="mb-3">
+
+
+              <label for="memberId" class="form-label">아이디</label>
+            <input type="text" class="form-control" id="memberId" name="memberId">
+            <button type="button" class="m-1 text-end btn btn-secondary " id="memberIdCheck">아이디 중복검사</button>
+          </div>
+
+          <div class="mb-3">
+              <label for="pswd" class="form-label">사용할 비밀번호</label>
+              <input type="password" class="form-control" id="pswd" name="pswd">
+          </div>
+
+          <div class="mb-3">
+              <label for="memberName" class="form-label">이름</label>
+              <input type="text" class="form-control" id="memberName" name="memberName">
+          </div>
+
+          <div class="mb-3">
+              <label for="email" class="form-label">이메일</label>
+              <input type="text" class="form-control" id="email" name="email">
+          </div>
+          <div class="mb-3">
+              <label for="phone" class="form-label">전화번호</label>
+              <input type="text" class="form-control" id="phone" name="phone">
+          </div>
+
+          <div class="mb-3">
+              <label for="age" class="form-label">나이</label>
+              <input type="text" class="form-control" id="age" name="age">
+          </div>
+
+          <div class="mb-3">
+              <label for="address" class="form-label">주소</label>
+              <input type="text" class="form-control" id="address" name="address">
+          </div>
+
+          <div class="mb-3">
+              <label for="gender" class="form-label">성별</label>
+              <select class="form-select mb-3" id="gender" name="gender"  aria-label="Default select example">
+                  <option value="남자">남자</option>
+                  <option value="여자">여자</option>
+              </select>
+
+
+          </div>
+
+
+          <button type="submit" id="send" class="btn btn-secondary">회원가입 완료</button>
+        </div>
+
+      </div>
+
+
+
+    </form>
+</div>
+
+
+
+
+<div th:replace="fragments/footer::footer"></div>
+<script
+        src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous"></script>
+<script  th:inline="javascript">
+
+
+let memberIdChk = false
+
+$('#memberIdCheck').click(function(e){
+
+    let memberId = $('#memberId').val()
+
+    if(memberId.length == 0){
+        alert('아이디를 입력해주세요.')
+        return;
+    }
+
+        $.ajax({
+
+        type:'GET',
+        dataType : 'text',
+        url : '/memberIdCheck',
+        data : {
+            memberId : memberId
+
+        },success:function(data){
+
+            if(data == 'true'){
+                alert('이미 존재하는 아이디 입니다.')
+                memberIdChk = 'false'
+            }else{
+                alert('사용 가능한 아이디 입니다.')
+                memberIdChk = 'true'
+            }
+
+        },error:function(data){
+            alert('실패')
+        }
+
+
+        })
+
+})
+
+$('#send').click(function(e){
+
+  let memberId = $('#memberId').val()
+  let pswd = $('#pswd').val()
+  let memberName = $('#memberName').val()
+  let email = $('#email').val()
+  let phone = $('#phone').val()
+  let age = $('#age').val()
+  let address = $('#address').val()
+  let gender = $('#gender').val()
+
+  let arr = [memberId,pswd,memberName,email,phone,age,address,gender]
+
+    for(let i = 0; i < arr.length; i++){
+        if(arr[i].length == 0){
+            if(i == 0){
+                alert('아이디를 입력해주세요.')
+            }else if(i ==1 ){
+                alert('비밀번호를 입력해주세요.')
+            }else if(i == 2){
+                alert('이름을 입력해주세요.')
+            }else if(i == 3){
+                alert('이메일을 입력해주세요.')
+            }else if(i == 4){
+                alert('전화번호를 입력해주세요.')
+            }else if(i == 5){
+                 alert('나이를 입력해주세요.')
+            }else if(i == 6){
+                 alert('주소를 입력해주세요.')
+            }else if(i == 7){
+                 alert('성별을 입력해주세요.')
+            }
+            e.preventDefault()
+            return;
+
+        }
+    }
+
+
+
+
+    if(memberIdChk == 0){
+
+        alert('아이디 중복 검사를 해주세요')
+         e.preventDefault()
+        return;
+    }
+
+    alert('회원가입 되었습니다.')
+
+
+})
+
+
+
+
+</script>
+
+</body>
+</html>

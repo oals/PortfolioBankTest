@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+    <div th:fragment="Main_header">
+
+
+        <!--header 영역-->
+        <div class = container>
+
+            <nav id="navbar-example2" class="navbar bg-white px-3 mb-3">
+                <a class="navbar-brand" href="/">TestBank</a>
+                <ul class="nav nav-pills">
+
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-light " th:if="${#authentication.principal} == anonymousUser" style="color:black"  href="/registerPage">회원가입</a>
+                        <a class="nav-link btn btn-light "  th:unless="${#authentication.principal} == anonymousUser" style="color:black" th:text="|${#authentication.principal.username} 님|"> </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-light " th:if="${#authentication.principal} == anonymousUser" style="color:black"  href="/user/login">로그인</a>
+                        <a class="nav-link btn btn-light " th:unless="${#authentication.principal} == anonymousUser" style="color:black"  href="/logout">로그아웃</a>
+                    </li>
+
+                </ul>
+            </nav>
+
+
+        </div>
+
+
+
+    </div> <!--end main header -->
+
+
+
+
+
+    <div th:fragment="blog_header">
+        <!--header 영역-->
+        <div class = container>
+            <nav class="navbar navbar-expand-lg bg-body-tertiary">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="/">Free-Blog</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
+                        <div class="collapse navbar-collapse d-flex" id="navbarSupportedContent">
+
+                            <div class="nav-item col-12">
+                                <form class="d-flex justify-content-center" role="search">
+
+                                    <div class="col-8">
+                                        <input class="form-control me-2 w-100" type="search" placeholder="관심사를 검색해보세요" aria-label="Search">
+                                    </div>
+
+                                </form>
+                            </div>
+                            <form role="search">
+
+
+
+                        </form>
+                    </div>
+                </div>
+            </nav>
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+</html>

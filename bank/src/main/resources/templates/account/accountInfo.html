@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout" >
+<link href="../../static/bootstrap/css/bootstrap.min.css"
+      th:href="@{/bootstrap/css/bootstrap.min.css}"  rel="stylesheet" >
+<script src="../../static/bootstrap/js/bootstrap.bundle.min.js"
+        th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<link href="css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet" />
+
+
+<body>
+
+<div th:replace="fragments/header::Main_header"></div>
+
+<div class="container">
+
+    <h3 class="text-center">계좌 정보 페이지</h3>
+    <hr>
+        <div class="d-flex justify-content-center" style="height: 200px;">
+
+            <div class="d-flex align-items-start flex-column mb-3 col-6" style="height: 200px;">
+
+
+              <div class="m-auto text-center mt-5" style="width:550px">
+
+
+                  <ul class="list-group">
+                      <li class="list-group-item">  <span>은행명 : [[${accountDTO.accountName}]]</span> </li>
+                        <li  class="list-group-item">  <span> 계좌번호 : [[${accountDTO.accountNumber}]]</span> </li>
+
+                      <li class="list-group-item"> <span> 예금액 : [[${accountDTO.balance}]]원</span></li>
+                      <li class="list-group-item">   <a th:href="@{/sendPage(accountNumber=${#strings.replace(accountDTO.accountNumber,'-','')})}">이체하기</a></li>
+                  </ul>
+
+              </div>
+
+
+                    <div class="mt-5 m-auto" style="width:550px">
+
+                        <div class="accordion" id="accordionExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        나의 다른 계좌
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse " aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                    <div class="accordion-body">
+
+                                        <table class="table">
+
+
+                                        </table>
+                                        <div id="paging" class="mt-2">
+
+                                        </div>
+
+
+
+                                     </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+              </div>
+
+            </div>
+
+
+            <hr class="mt-3 mb-3">
+
+          <div class="col-6 m-2" id="historyList">
+
+
+
+              <div class="mb-3">
+                  <button type="button" class="btn btn-outline-primary opt">전체</button>
+                  <button type="button" class="btn btn-outline-primary opt">입금</button>
+                  <button type="button" class="btn btn-outline-primary opt">송금</button>
+                  <button type="button" class="btn btn-outline-primary opt">적금</button>
+
+
+              </div>
+
+              <div th:if="${historyDTO.empty}">
+                  <span> 내역이 없습니다</span>
+              </div>
+
+              <div th:unless="${historyDTO.empty}"  style="overflow:scroll; width:450px; height:590px; border:1px solid black:">
+                    <div style="float:right" id="calender">
+
+                    </div>
+
+
+
+                 <ul class="list-group" th:each="data : ${historyDTO}">
+                     <div th:if="${data.chk == '입금'}" class="m-1">
+                         <span th:text="${#strings.replace(data.updateDate,'T', ' ')}"></span> <br>
+
+                         <b style="color:blue">[[${data.chk}]]</b>
+                         [[${data.memberName}]]<span style="color:gray">([[${data.accountNumber}]])</span> <br>
+                             +[[${data.money}]]원 ->  현재 잔액 : <span style="color:blue"> [[${data.balance}]]원</span>
+
+                     </div>
+
+                     <div th:if="${data.chk == '송금'}" class="m-1">
+
+                         <span th:text="${#strings.replace(data.updateDate,'T', ' ')}"></span> <br>
+
+                         <b style="color:red">[[${data.chk}]]</b>
+                         [[${data.memberName}]]<span style="color:gray">([[${data.accountNumber}]])</span> <br>
+                         -[[${data.money}]]원 ->  현재 잔액 : <span style="color:red"> [[${data.balance}]]원</span>
+
+
+                     </div>
+
+                     <div th:if="${data.chk == '적금'}" class="m-1">
+                         <span th:text="${#strings.replace(data.updateDate,'T', ' ')}"></span> <br>
+
+                         <b style="color:green">[[${data.chk}]]</b>
+                         [[${data.memberName}]] <br>
+                         -[[${data.money}]]원 ->  현재 잔액 : <span style="color:green"> [[${data.balance}]]원</span>
+
+
+                     </div>
+
+                     <div th:if="${data.chk == '적금 반환'}" class="m-1">
+                         <span th:text="${#strings.replace(data.updateDate,'T', ' ')}"></span> <br>
+
+                         <b style="color:purple">[[${data.chk}]]</b>
+                         [[${data.memberName}]] <br>
+                         -[[${data.money}]]원 ->  현재 잔액 : <span style="color:purple"> [[${data.balance}]]원</span>
+
+                     </div>
+
+
+
+
+                        <hr>
+                  </ul>
+              </div>
+
+
+
+          </div>
+
+
+          <input type="hidden" name="memberId" id="memberId" th:value="${#authentication.principal.username}">
+
+
+      </div>
+
+</div>
+
+
+
+
+<!--<div th:replace="fragments/footer::footer"></div>-->
+
+<script
+        src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous"></script>
+<script  th:inline="javascript">
+
+
+$('.accordion-button').click(function(){
+
+    let accountNumber = [[${accountDTO.accountNumber}]]
+    let memberId = [[${#authentication.principal.username}]]
+
+    accountNumber = accountNumber.replaceAll('-', '');
+
+
+     $.ajax({
+            type:"GET",
+            url:"/GetAccount",
+            dataType : 'json',
+            data: {
+                accountNumber : accountNumber,
+                memberId : memberId
+            },
+            success:function(data){
+                console.log(data)
+
+                $('.table').html(' ')
+
+                if(data.size == 0){
+                    $('.table').html('다른 계좌가 존재하지 않습니다')
+                    return;
+                }
+
+                let str =  + "<table class='table'>"
+                                            + "<thead>"
+                                            + "<tr>"
+                                                + "<th scope='col'>" + " # " + "</th>"
+                                                + "<th scope='col'>" + "은행명" + "</th>"
+                                                + "<th scope='col'>" + "계좌번호" + "</th>"
+                                                + "<th scope='col'>" + "예금액" + "</th>"
+                                            + "</tr>"
+                                            + "</thead>"
+                                            + "<tbody>"
+                                             for(let i = 0; i< data.list.length; i++){
+
+                                            accountNumber = data.list[i].accountNumber.replaceAll('-', '');
+
+                                              str += "<tr>"
+                                                    + "<th scope='row'>"+ " # " + "</th>"
+                                                    + "<td>" +  data.list[i].accountName+ "</td>"
+                                                    + "<td> <a href='/accountInfo?accountNumber=" + accountNumber  + "'> " +  data.list[i].accountNumber + "</a></td>"
+                                                    + "<td>" + data.list[i].balance + "원</td>"
+                                                + "</tr>"
+                                            }
+
+                                            str += "</tbody>"
+                                        + "</table>"
+
+             $('.table').html(str)
+
+
+                let str2 =  "<nav aria-label='Page navigation example justify-content-center align-items-center'>"
+                        +"<ul class='pagination justify-content-center ' >"
+                         if(data.prev == true){
+                            str2 += "<li class='page-item'>"
+                            + "<a class='page-link Accountpaging' pageLink='pagelink' data-num='" + (data.start - 1)  + "'> Previous </a>"
+                            + "</li>"
+                            }
+
+                for(let i=data.start; i<=data.end; i++){
+
+                    str2 += "<li>"
+                    if(data.page == i ){
+                        str2 += "<div class='page-link active Accountpaging'  data-num='" + i +  "'>" +  i + "</div>"
+                    }else{
+                        str2 += "<a class='page-link  Accountpaging'  data-num='" + i +  "'>" +  i + "</a>"
+                    }
+                    str2 +="</li>"
+                }
+
+                if(data.next == true){
+                    str2 += "<li class='page-item'>"
+                             + "<a class='page-link Accountpaging' pageLink='pagelink' data-num='" + (data.end + 1)  + "'>  Next </a>"
+                            +"</li>"
+                }
+                str2 += "</ul>"
+                        +"</nav>"
+
+
+                   $('#paging').html(str2)
+
+
+
+
+
+            },
+            error:function(){
+                alert('잠시 후 다시 시도해주세요.')
+            }
+
+  })
+
+})
+
+
+
+
+
+
+$(document).on('click','.Accountpaging' ,function(e){
+
+  let accountNumber = [[${accountDTO.accountNumber}]]
+  let memberId = [[${#authentication.principal.username}]]
+  const page = e.target.getAttribute("data-num")
+
+  accountNumber = accountNumber.replaceAll('-', '');
+
+     $.ajax({
+            type:"GET",
+            url:"/GetAccount",
+            dataType : 'json',
+            data: {
+                page : page,
+                accountNumber : accountNumber,
+                memberId : memberId
+            },
+            success:function(data){
+                console.log(data)
+
+                $('.table').html(' ')
+                $('#paging').html(' ')
+
+                if(data.size == 0){
+                    $('.table').html('다른 계좌가 존재하지 않습니다')
+                    return;
+                }
+
+                let str =  + "<table class='table'>"
+                                            + "<thead>"
+                                            + "<tr>"
+                                                + "<th scope='col'>" + " # " + "</th>"
+                                                + "<th scope='col'>" + "은행명" + "</th>"
+                                                + "<th scope='col'>" + "계좌번호" + "</th>"
+                                                + "<th scope='col'>" + "예금액" + "</th>"
+                                            + "</tr>"
+                                            + "</thead>"
+                                            + "<tbody>"
+                                            for(let i = 0; i< data.list.length; i++){
+
+                                            accountNumber = data.list[i].accountNumber.replaceAll('-', '');
+
+                                              str += "<tr>"
+                                                    + "<th scope='row'>"+ " # " + "</th>"
+                                                    + "<td>" +  data.list[i].accountName+ "</td>"
+                                                    + "<td> <a href='/accountInfo?accountNumber=" + accountNumber  + "'> " +  data.list[i].accountNumber + "</a></td>"
+                                                    + "<td>" + data.list[i].balance + "원</td>"
+                                                + "</tr>"
+                                            }
+
+                                            str += "</tbody>"
+                                        + "</table>"
+
+             $('.table').html(str)
+
+
+                let str2 =  "<nav aria-label='Page navigation example justify-content-center align-items-center'>"
+                        +"<ul class='pagination justify-content-center ' >"
+                         if(data.prev == true){
+                            str2 += "<li class='page-item'>"
+                            + "<a class='page-link Accountpaging' pageLink='pagelink' data-num='" + (data.start - 1)  + "'> Previous </a>"
+                            + "</li>"
+                            }
+
+                for(let i=data.start; i<=data.end; i++){
+
+                    str2 += "<li>"
+                    if(data.page == i ){
+                        str2 += "<div class='page-link active Accountpaging'  data-num='" + i +  "'>" +  i + "</div>"
+                    }else{
+                        str2 += "<a class='page-link  Accountpaging'  data-num='" + i +  "'>" +  i + "</a>"
+                    }
+                    str2 +="</li>"
+                }
+
+                if(data.next == true){
+                    str2 += "<li class='page-item'>"
+                             + "<a class='page-link Accountpaging' pageLink='pagelink' data-num='" + (data.end + 1)  + "'>  Next </a>"
+                            +"</li>"
+                }
+                str2 += "</ul>"
+                        +"</nav>"
+
+
+                   $('#paging').html(str2)
+
+
+
+
+
+            },
+            error:function(){
+                alert('잠시 후 다시 시도해주세요.')
+            }
+
+  })
+
+
+
+
+
+
+})
+
+
+
+
+
+    $(document).on('click','.opt' ,function(e){
+        console.log(e.target.innerText)
+        let opt = e.target.innerText
+        let accountNumber = [[${accountDTO.accountNumber}]]
+
+        accountNumber = accountNumber.replaceAll('-', '');
+
+       $.ajax({
+            type:"GET",
+            url:"/GetOptAccountInfo",
+            dataType : 'json',
+            data: {
+                opt : opt,
+                accountNumber : accountNumber
+            },
+            success:function(data){
+               console.log(data)
+               $('#historyList').html(' ')
+
+                let str = ""
+
+                str  += "<div class='col-6' id='historyList'>"
+                          + "<div class='mb-3'>"
+                          + "<button type='button' class='btn btn-outline-primary opt me-2'>" + "전체" + "</button>"
+                          + "<button type='button' class='btn btn-outline-primary opt me-2'>" + "입금" + "</button>"
+                          + "<button type='button' class='btn btn-outline-primary opt me-2'>" + "송금" + "</button>"
+                          + "<button type='button' class='btn btn-outline-primary opt me-2'>" + "적금" + "</button>"
+                      + "</div>"
+
+                    if(data.length == 0){
+                      str += "<div>"
+                          + "<span>"  + "내역이 없습니다" + "</span>"
+                      + "</div>"
+                      }
+
+                       if(data.length > 0){
+                     str += "<div style='overflow:scroll; width:450px; height:590px; border:1px solid black:'>"
+                            + "<div style='float:right' id='calender'>"
+
+                            + "</div>"
+
+                        for(let i = 0; i< data.length; i++){
+                         str += "<ul class='list-group'>"
+                             if(data[i].chk == '입금'){
+                             str += "<div class='m-1'>"
+                                 + "<span>" + data[i].updateDate.substr(0,10)  + "</span>" + " "
+                                 + "<span>" + data[i].updateDate.substr(11,19)  + "</span>" + "<br>"
+                                 + "<b style='color:blue'>" + data[i].chk + "</b>" + " "
+                                 + data[i].memberName +
+                                 "<span style='color:gray'>(" + data[i].accountNumber + ")</span>" + "<br>"
+                                   +  "+" + data[i].money + "원 ->" + " " + "현재 잔액 :" + " " + "<span style='color:blue'>" + data[i].balance + "원" + "</span>"
+                             + "</div>"
+                             }else if(data[i].chk == '송금'){
+                            str += "<div class='m-1'>"
+                                 + "<span>" + data[i].updateDate.substr(0,10)  + "</span>" + " "
+                                 + "<span>" + data[i].updateDate.substr(11,19)  + "</span>" + "<br>"
+                                 + "<b style='color:red' >" + data[i].chk + "</b>" + " "
+                                 + data[i].memberName +
+                                 "<span style='color:gray'>(" + data[i].accountNumber + ")</span>" + "<br>"
+                                   +  "-" + data[i].money + "원 ->" + " " + "현재 잔액 :" + " " + "<span style='color:red'>" + data[i].balance + "원" + "</span>"
+                             + "</div>"
+                             }else {
+                                 if(data[i].chk == '적금'){
+                                      str += "<div class='m-1'>"
+                                         + "<span>" + data[i].updateDate.substr(0,10)  + "</span>" + " "
+                                         + "<span>" + data[i].updateDate.substr(11,19)  + "</span>" + "<br>"
+                                         + "<b style='color:green'>" + data[i].chk + "</b>" + " "
+                                         + data[i].memberName +
+                                         "<br>"
+                                           +  "-" + data[i].money + "원 ->" + " " + "현재 잔액 :" + " " + "<span style='color:green'>" + data[i].balance + "원" + "</span>"
+                                     + "</div>"
+                                 }else{
+                                      str += "<div class='m-1'>"
+                                         + "<span>" + data[i].updateDate.substr(0,10)  + "</span>" + " "
+                                         + "<span>" + data[i].updateDate.substr(11,19)  + "</span>" + "<br>"
+                                         + "<b style='color:purple'>" + data[i].chk + "</b>" + " "
+                                         + data[i].memberName +
+                                         "<br>"
+                                           +  "-" + data[i].money + "원 ->" + " " + "현재 잔액 :" + " " + "<span style='color:purple'>" + data[i].balance + "원" + "</span>"
+                                     + "</div>"
+                                 }
+
+                             }
+
+
+                                str += "<hr>"
+                          + "</ul>"
+                          }
+
+                      str += "</div>"
+                      }
+                  str += "</div>"
+
+
+
+                console.log(str)
+                $('#historyList').html(str)
+
+
+            },
+            error:function(){
+                alert('잠시 후 다시 시도해주세요.')
+            }
+
+  })
+
+
+
+
+    })
+
+</script>
+
+</body>
+</html>

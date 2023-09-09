@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<link href="../../static/bootstrap/css/bootstrap.min.css"
+      th:href="@{/bootstrap/css/bootstrap.min.css}"  rel="stylesheet" >
+<script src="../../static/bootstrap/js/bootstrap.bundle.min.js"
+        th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
+<link href="css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet" />
+
+<style>
+
+    .accountInfo:hover{
+        text-decoration : underline !important;
+
+    }
+
+</style>
+<body>
+
+
+<div th:replace="fragments/header::Main_header"></div>
+
+<hr>
+
+
+<div class="container">
+
+    <div class="w-100">
+        <div class="d-flex justify-content-center">
+            <div class="col-8 mt-5">
+
+                <div class="card mt-5">
+                    <h5 class="card-header">나의 계좌</h5>
+                    <div th:if="${#authentication.principal} != anonymousUser" >
+                        <div id="UserAccountInfo" style="height:400px">
+                            <div class="mx-3 mt-3"  th:each="data : ${accountDTO.list}"  >
+
+                                <a href="#" class="accountInfo" style="color:black; text-decoration:none">
+                                    [[${data.accountName}]] (<small>[[${data.accountNumber}]]</small>)</a>
+                                <br>
+                                <span>예금액 : [[${data.balance}]]원</span>
+                                <hr>
+
+                            </div>
+                        </div>
+
+                        <div id="AccountPaging" class="mt-2">
+                            <div class=" "  th:if="${not #strings.isEmpty(accountDTO.list)}" >
+                                <nav aria-label="Page navigation example justify-content-center align-items-center">
+                                    <ul class="pagination justify-content-center " >
+                                        <li class="page-item" th:if="${accountDTO.prev}">
+                                            <a class="page-link paging" pageLink="pagelink" th:data-num="${accountDTO.start-1}">Previous</a>
+                                        </li>
+
+                                        <!-- 페이지 번호 표시 -->
+                                        <th:block  th:each="i : ${#numbers.sequence(accountDTO.start,accountDTO.end)}" >
+                                            <li>
+                                                <th:block th:if="${accountDTO.page == i}">
+                                                    <a class="page-link active paging"   th:data-num="${i}">[[${i}]]</a>
+                                                </th:block>
+                                                <th:block th:unless="${accountDTO.page == i}">
+                                                    <a class="page-link paging " th:data-num="${i}">[[${i}]]</a>
+                                                </th:block>
+                                            </li>
+                                        </th:block>
+                                        <!-- ------- -->
+
+                                        <li class="page-item" th:if="${accountDTO.next}">
+                                            <a class="page-link paging" pageLink="pagelink" th:data-num="${accountDTO.end+1}">Next</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+
+
+
+                </div>
+
+            </div>
+
+
+            <div class="col-4 mt-5">
+
+                <div class="card m-5" >
+                    <div class="card-body">
+
+                        <div th:if="${#authentication.principal} != anonymousUser">
+
+
+                            <div>
+                                <div class="card" style="width: 18rem;">
+                                        <div class="card-body">
+                                            <h5 class="card-title">[[${memberDTO.memberName}]]님
+                                                <small style="color:gray">([[${memberDTO.memberId}]])</small></h5>
+
+
+                                        </div>
+                                        <ul class="list-group list-group-flush">
+                                            <li class="list-group-item">총 예금액 : [[${allAccountBalance}]]원 </li>
+                                            <li class="list-group-item">등급 : [[${memberDTO.level}]]</li>
+                                            <th:block th:if="${savingsDTO != null}">
+                                                <li class="list-group-item">가입된 적금 상품 : [[${savingsDTO.product_name}]] </li>
+                                                <li class="list-group-item">적금 : [[${savingsDTO.AllBalance}]] </li>
+                                            </th:block>
+                                            <th:block th:unless="${savingsDTO != null}">
+                                                <li class="list-group-item">가입된 적금 상품이 없습니다. </li>
+                                            </th:block>
+
+
+                                            <li class="list-group-item">
+                                                <a th:href="@{InsertAccount(memberId=${#authentication.principal.username})}" > 계좌 등록하기</a>
+                                            </li>
+
+                                        </ul>
+                                </div>
+
+                            </div>      <!-- 유저 프로필 -->
+
+
+
+
+                        </div>
+
+                        <div th:unless="${#authentication.principal} != anonymousUser" class="card" style="width: 18rem;">
+
+                            <ul class="list-group list-group-flush">
+
+                                <li class="list-group-item  m-3 mb-0 text-center ">
+                                    <small class="card-title">로그인이 필요한 서비스 입니다. </small><br>
+                                    <a th:href="@{/user/login}" style=" color:black;" class="hover">
+                                        <span class="h5">로그인</span>
+                                    </a> 하러가기
+                                </li>
+
+
+                                <li class="list-group-item text-center">
+                                    <div class="">
+                                        <a th:href="@{/findEmailPage}"  class="card-link hover" style=" color:black;text-decoration-line:none;">아이디 찾기</a>
+                                        <a th:href="@{/findPwPage}"  class="card-link hover" style=" color:black;text-decoration-line:none;">비밀번호 찾기</a>
+
+                                    </div>
+                                </li>
+                                <li class="list-group-item ms-4">
+                                    <a th:href="@{/registerPage}" class="card-link hover" style=" color:black;text-decoration-line:none;">회원가입</a>
+                                </li>
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="d-grid gap-2 col-9 mx-auto mt-0">
+                </div>
+
+
+
+            </div>
+
+            </div>
+        </div>
+
+
+    <hr>
+
+    <div>
+        <h3 class="text-center">적금 상품 <small class="h5" style="color:gray">(한 개의 상품만 가입할 수 있습니다.)</small></h3>
+        <div class="text-start mb-5">
+
+            <div class="row">
+                <div class="col-4">
+                    <div class="list-group" id="list-tab" role="tablist">
+                        <a class="list-group-item list-group-item-action active" id="list-home-list" data-bs-toggle="list" href="#list-home" role="tab" aria-controls="list-home">목돈 모으기 상품</a>
+                        <a class="list-group-item list-group-item-action" id="list-profile-list" data-bs-toggle="list" href="#list-profile" role="tab" aria-controls="list-profile">장기 적금 상품</a>
+                        <a class="list-group-item list-group-item-action" id="list-messages-list" data-bs-toggle="list" href="#list-messages" role="tab" aria-controls="list-messages">WON 적금 상품</a>
+                        <a class="list-group-item list-group-item-action" id="list-settings-list" data-bs-toggle="list" href="#list-settings" role="tab" aria-controls="list-settings">자유 적금 상품</a>
+                    </div>
+                </div>
+
+                <div class="col-8 card" >
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
+                            <br>
+                            * 상품특징 : 매월 일정한 날짜에 10000원을 자동 납입하여 목돈을 마련하는 정액적립식 예금 <br><br>
+
+                            * 가입기간 : 6개월 <br><br>
+
+                            * 이자 : 적금 금액의 1% <br>
+
+                            <th:block th:if="${savingsDTO != null}">
+                                <div class="text-end mb-3">
+                                    <span class="mt-2 "><b>이미 가입된 상품이 있습니다.</b></span>
+                                </div>
+                            </th:block>
+                            <th:block th:unless="${savingsDTO != null}">
+                                <div class="text-end mb-3">
+                                    <button type="button"  class="btn btn-outline-primary mt-1" onclick="Savings('목돈 모으기 상품')"> 가입하기 </button>
+                                </div>
+                            </th:block>
+
+                        </div>
+
+                        <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+                            <br>
+                            * 상품특징 : 매월 일정한 날짜에 100000원을 자동 납입하여 목돈을 마련하는 정액적립식 예금 <br><br>
+
+                            * 가입기간 : 6개월 <br><br>
+
+                            * 이자 : 적금 금액의 2% <br>
+
+
+                            <th:block th:if="${savingsDTO != null}">
+                                <div class="text-end mb-3">
+                                    <span class="mt-2 "><b>이미 가입된 상품이 있습니다.</b></span>
+                                </div>
+                            </th:block>
+                            <th:block th:unless="${savingsDTO != null}">
+                                <div class="text-end mb-3">
+                                    <button type="button" class="btn btn-outline-primary  mt-1" onclick="Savings('장기 적금 상품')"> 가입하기 </button>
+                                </div>
+                            </th:block>
+
+                        </div>
+
+                        <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">
+                            <br>
+                            * 상품특징 : 매월 일정한 날짜에 500000원을 자동 납입하여 목돈을 마련하는 정액적립식 예금 <br><br>
+
+                            * 가입기간 : 6개월 <br><br>
+
+                            * 이자 : 적금 금액의 3% <br>
+
+
+                            <th:block th:if="${savingsDTO != null}">
+                                <div class="text-end mb-3">
+                                    <span class="mt-2 "><b>이미 가입된 상품이 있습니다.</b></span>
+                                </div>
+                            </th:block>
+                            <th:block th:unless="${savingsDTO != null}">
+                                <div class="text-end mb-3">
+                                    <button type="button" class="btn btn-outline-primary  mt-1 " onclick="Savings('WON 적금 상품')"> 가입하기 </button>
+                                </div>
+                            </th:block>
+
+
+                        </div>
+
+                        <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
+                            <br>
+                            * 상품특징 : 매월 일정한 날짜에 1000000원을 자동 납입하여 목돈을 마련하는 정액적립식 예금 <br><br>
+
+                            * 가입기간 : 6개월 <br><br>
+
+                            * 이자 : 적금 금액의 4% <br>
+
+                            <th:block th:if="${savingsDTO != null}">
+                                <div class="text-end mb-3">
+                                    <span class="mt-2 "><b>이미 가입된 상품이 있습니다.</b></span>
+                                </div>
+                            </th:block>
+                            <th:block th:unless="${savingsDTO != null}">
+                                <div class="text-end mb-3">
+                                    <button type="button" class="btn btn-outline-primary  mt-1 " onclick="Savings('자유 적금 상품')"> 가입하기 </button>
+                                </div>
+
+                           </th:block>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    </div>
+
+
+
+<div class="modal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">계좌 비밀번호 4자리를 입력해주세요.</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="m-1 w-75 input-group mt-1">
+                    <span class="input-group-text" id="basic-addon1">비밀번호 </span>
+                    <input type="password" id="accountPswd" maxlength="4" class="form-control" aria-label="Username" aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="accountPswdCheck">확인</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<div th:replace="fragments/footer::footer"></div>
+
+<script
+        src="https://code.jquery.com/jquery-3.7.0.js"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM="
+        crossorigin="anonymous"></script>
+<script th:inline="javascript">
+
+let accountNumber = ' '
+
+
+$(document).on('click','.accountInfo' ,function(e){
+
+        e.preventDefault()
+        accountNumber = e.target.innerText
+
+        if(accountNumber.length == 19){
+            accountNumber = accountNumber.replaceAll('-', '');
+        }else{
+            accountNumber = accountNumber.substr(accountNumber.indexOf('(') + 1, accountNumber.indexOf(')'));
+
+            accountNumber = accountNumber.replaceAll('-', '');
+            accountNumber = accountNumber.replaceAll(')', '');
+        }
+
+        console.log(accountNumber)
+
+
+        $('.modal').modal("show")
+    })
+
+    $('#accountPswdCheck').click(function(){
+        let accountPswd = $('#accountPswd').val()
+        console.log(accountPswd)
+
+
+      $.ajax({
+                type:"GET",
+                url:"/AccountPswdChk",
+                dataType : 'text',
+                data: {
+                    accountNumber : accountNumber,
+                    accountPswd : accountPswd
+                },
+                success:function(data){
+                  if(data =='true'){
+                    location.href='/accountInfo?accountNumber=' + accountNumber
+
+
+                  }else{
+                    alert('비밀번호를 확인해주세요')
+                     $('#accountPswd').val('')
+                  }
+
+
+
+                },
+                error:function(){
+                    alert('잠시 후 다시 시도해주세요.')
+                }
+
+      })
+
+
+    })
+
+
+function Savings(product_name){
+
+
+//로그인 검사
+if([[${#authentication.principal}]] == 'anonymousUser'){
+    alert('로그인이 필요한 서비스입니다.')
+    return;
+}
+
+location.href="/SavingsRegisterPage?product_name=" +  product_name
+
+
+
+}
+
+$(document).on('click','.paging' ,function(e){
+
+    let page = e.target.innerText
+
+    $.ajax({
+        type : 'GET',
+        dataType : 'json',
+        url:"/GetUserAccount",
+        data : {
+            page : page
+        },success:function(data){
+            console.log(data)
+
+            let str = ''
+
+                 str += "<div class='mx-3 mt-3' id='UserAccountInfo'>"
+                        for(let i = 0; i < data.list.length; i++){
+
+                            str += "<a href='#' class='accountInfo' style='color:black; text-decoration : none'> "
+                                +   data.list[i].accountName + " " + "(" + "<small>" + data.list[i].accountNumber + "</small>" + ")" + "</a>"
+                                + "<br>"
+                                + "<span>" + "예금액 : "  + data.list[i].balance + "원"+ "</span>"
+                                + "<hr>"
+
+                            }
+
+                       str += "</div>"
+
+
+            let str2 = ''
+               str2 +=  "<nav aria-label='Page navigation example justify-content-center align-items-center'>"
+                        +"<ul class='pagination justify-content-center ' >"
+                         if(data.prev == true){
+                            str2 += "<li class='page-item'>"
+                            + "<a class='page-link paging' pageLink='pagelink' data-num='" + (data.start - 1)  + "'> Previous </a>"
+                            + "</li>"
+                            }
+
+                for(let i=data.start; i<=data.end; i++){
+
+                    str2 += "<li>"
+                    if(data.page == i ){
+                        str2 += "<div class='page-link active paging'  data-num='" + i +  "'>" +  i + "</div>"
+                    }else{
+                        str2 += "<a class='page-link  paging'  data-num='" + i +  "'>" +  i + "</a>"
+                    }
+                    str2 +="</li>"
+                }
+
+                if(data.next == true){
+                    str2 += "<li class='page-item'>"
+                             + "<a class='page-link paging' pageLink='pagelink' data-num='" + (data.end + 1)  + "'>  Next </a>"
+                            +"</li>"
+                }
+                str2 += "</ul>"
+                        +"</nav>"
+
+
+            $('#UserAccountInfo').html(' ')
+            $('#UserAccountInfo').html(str)
+            console.log(str2)
+
+            $('#AccountPaging').html(' ')
+            $('#AccountPaging').html(str2)
+
+
+
+
+        },error:function(data){
+            alert('실패')
+        }
+
+
+    })
+
+
+
+})
+
+
+
+
+
+
+</script>
+</body>
+</html>
