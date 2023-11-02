@@ -26,6 +26,9 @@
 # ERD
 
 
+![은행 프로젝트 erd](https://github.com/oals/PortfolioBank/assets/136543676/287f1ddb-4e14-4fa2-8248-1af365fb7412)
+
+
 # 핵심 기능 
 
 
