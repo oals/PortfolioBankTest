@@ -144,14 +144,23 @@
 
 ![개인 프로젝트 bank 계좌 이체 페이지1](https://github.com/oals/PortfolioBank/assets/136543676/5318187c-6293-4f95-a91c-358576b57034)
 
+<br>
+<br>
+<details>
+ <summary> 계좌 이체 페이지 플로우 차트
+ 
+ </summary> 
+ 
+<img src='https://github.com/oals/PortfolioBank/assets/136543676/41d86553-b8c2-4398-985a-bbb63da439b1'>
+</details>
 
-![개인 프로젝트 bank 계좌 이체 페이지3](https://github.com/oals/PortfolioBank/assets/136543676/661a3d6b-23bd-4723-ac70-3cb3f79fafbc)
 
-<BR>
-<UL>
- <LI> 입금 받는 계좌의 존재유무를 판단하고 입금 하려는 계좌의 잔액을 입금 하려는 금액과 비교 후 비교 결과에 따른 처리를 합니다. </LI>
-</UL>
-<BR>
+<br>
+<br>
+
+
+
+
 
 
 <HR>
@@ -201,17 +210,20 @@
 <BR>
 
 
-![개인 프로젝트 bank 적금 가입 페이지5](https://github.com/oals/PortfolioBank/assets/136543676/7c7ce045-de49-4159-bb9d-0a55e4d6e983)
+
+<br>
+<br>
+<details>
+ <summary> 적금 페이지 플로우 차트
+ 
+ </summary> 
+ 
+<img src='https://github.com/oals/PortfolioBank/assets/136543676/2967c4d8-4aec-4500-b033-efb7f44dc596'>
+</details>
 
 
-<BR>
-<UL>
- <LI> 한 달을 기준으로 계좌에서 적금액이 자동으로 빠져 나가고 적금 만기일이 되었는지 검사합니다 </LI>
-  <LI> 적금 만기일에 도달하였을 시 적금된 금액과 이자를 계좌에 반환해줍니다. </LI>
-</UL>
-<BR>
-<BR>
-
+<br>
+<br>
 
 
 <HR>
