@@ -29,6 +29,253 @@
 
 # 핵심 기능 및 페이지 소개
 
+
+
+<details>
+ <summary> Member Entity
+ 
+ </summary> 
+
+
+
+
+    @Getter
+    @Setter
+    @Table(name="member")
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Entity
+    public class Member {
+
+    @Id
+    @Column(name="member_id")
+    private String memberId; // 아이디
+    private String memberName; //유저이름
+    private String pswd;     // 비밀번호
+    private String email;     // 이메일
+    private String phone;       // 전화번호
+    private String age;         // 생년월일
+    private String address;     // 주소
+    private String gender;      // 성별
+    private LocalDateTime regDate;  // 등록일자
+
+    @Enumerated(EnumType.STRING)
+    private Level level;       // 레벨
+
+
+
+    public static Member createMember(MemberDTO memberDTO, PasswordEncoder passwordEncoder){
+        Member member = new Member();
+        member.setMemberId(memberDTO.getMemberId());
+        member.setMemberName(memberDTO.getMemberName());
+        member.setEmail(memberDTO.getEmail());
+        member.setPhone(memberDTO.getPhone());
+        member.setAge(memberDTO.getAge());
+        member.setAddress(memberDTO.getAddress());
+        member.setGender(memberDTO.getGender());
+        member.setRegDate(LocalDateTime.now());
+        member.setLevel(Level.FIVE); //일반 유저 디폴트값 5등급
+
+        // 암호화
+        String password = passwordEncoder.encode(memberDTO.getPswd());
+        member.setPswd(password);
+
+        return member;
+    }
+
+
+
+    }
+
+
+
+
+
+
+
+ 
+</details>
+
+
+<details>
+ <summary> Account Entity
+ 
+ </summary> 
+
+
+
+
+
+    @Getter
+    @Table(name="account")
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Entity
+    public class Account {
+
+    @Id
+    @Column(name="account_number")
+    private String accountNumber;       // 계좌 번호
+
+    @Column(name="account_name")
+    private String accountName;         //은행명
+
+    @Column(name="account_pswd")
+    private String accountPswd;         //계좌 비밀번호
+
+    @Column(name="create_date")
+    private LocalDateTime createDate;   // 생성 일자
+
+    @Column(name="balance")
+    private int balance;                //계좌 잔액
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;              // 회원 아이디
+
+
+
+    public void MinusBalance(int balance){
+        this.balance -= balance;
+
+    }
+
+    public void PlusBalance(int balance){
+        this.balance += balance;
+
+    }
+
+
+
+
+
+    }
+
+
+
+
+
+
+ 
+</details>
+
+
+<details>
+ <summary> History Entity
+ 
+ </summary> 
+
+
+
+
+    @Getter
+    @Table(name="history")
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Entity
+    public class History {
+
+
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    private Long Id;
+    private int balance;               // 계좌 잔액
+    private int money;               // 상대방 이체 금액
+    private LocalDateTime updateDate;   // 입출금 일자
+    private String memberName;          // 입출금자
+    private String chk;              // 입/출금/이자 여부
+
+    private String myAccountNumber; // 조회할 계좌
+
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "accountNumber")
+    private Account account;            //  상대방 계좌 번호
+
+
+    }
+
+
+
+
+
+
+
+ 
+</details>
+
+
+<details>
+ <summary> Savings Entity
+ 
+ </summary> 
+
+
+
+
+    @Getter
+    @Setter
+    @Table(name="savings")
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Entity
+    public class Savings {
+
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "accountNumber")
+    private Account account;   //적금 게좌
+
+    private int balance;  //월 적금 금액
+    private String product_name; // 상품 이름
+    private int percent; //이자 퍼센트
+
+    private int AllBalance; //총 적금된 금액
+
+    @Column(name="savings_date")
+    private LocalDateTime savingsDate;   // 적금 시작일자
+
+    private LocalDateTime endDate; //적금이 끝나는 날짜
+
+
+    public void RegisterSavings(int balance){
+        this.setAllBalance(balance);
+        this.setSavingsDate(LocalDateTime.now());
+        this.setEndDate(this.getSavingsDate().plusMonths(6));
+    }
+
+    public void UpdateSavingsAllBalance(int balance){
+        this.setAllBalance(this.getAllBalance() + balance);
+        this.setSavingsDate(LocalDateTime.now());
+    }
+
+
+     }
+
+
+
+
+
+
+
+
+ 
+</details>
+
+
+
+
+
+<hr>
+
 <H3>메인 페이지</H3>
 <BR>
 
