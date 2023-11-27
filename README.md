@@ -56,6 +56,142 @@
 
 
 
+<HR>
+
+
+<H3>계좌 이체 페이지</H3>
+<BR>
+
+![개인 프로젝트 bank 계좌 이체 페이지1](https://github.com/oals/PortfolioBank/assets/136543676/5318187c-6293-4f95-a91c-358576b57034)
+
+<br>
+<br>
+<details>
+ <summary> 계좌 이체 페이지 플로우 차트
+ 
+ </summary> 
+ 
+<img src='https://github.com/oals/PortfolioBank/assets/136543676/41d86553-b8c2-4398-985a-bbb63da439b1'>
+</details>
+
+
+<details>
+ <summary> 계좌 이체 검사 Service 코드
+ 
+ </summary> 
+ 
+
+
+       public boolean SendCheck(TransferDTO transferDTO) {
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+        QAccount qAccount = QAccount.account;
+
+        Member member = memberRepository.findById(transferDTO.getReceiveMemberName()).orElseThrow();
+
+        // 받는 사람의 계좌 정보 검사
+        boolean chk = accountRepository.findByAccountNumberAndAccountNameAndMember(
+                transferDTO.getReceiveAccountNumber(), transferDTO.getReceiveAccountName(),member).isPresent();
+
+        if(chk){
+
+            //보내는 사람의 잔액과 이체하려는 금액 비교
+           chk =  queryFactory.select(qAccount.balance.gt(transferDTO.getSendBalance()))
+                   .from(qAccount)
+                   .where(qAccount.accountNumber.eq(transferDTO.getSendAccountNumber()))
+                   .fetchOne();
+
+            return chk;
+        }
+
+        return chk;
+    }
+
+
+
+
+</details>
+
+
+
+<details>
+ <summary> 계좌 이체 Service 코드
+ 
+ </summary> 
+ 
+
+
+       public boolean SendMoney(TransferDTO transferDTO) {
+
+        boolean result = true;
+        //보내는 사람의 예금 감소
+        Account SendAccount = accountRepository.findById(transferDTO.getSendAccountNumber()).orElseThrow();
+
+        //받는 사람의 예금 추가
+        Account ReceiveAccount = accountRepository.findById(transferDTO.getReceiveAccountNumber()).orElseThrow();
+
+        try{
+
+        // 보내는 사람의 계좌 이체 내역 추가
+        HistoryDTO SendHistoryDTO = HistoryDTO.builder()
+                .balance(SendAccount.getBalance() - transferDTO.getSendBalance())  //현재 잔액
+                .money(transferDTO.getSendBalance())                                //보낸 금액
+                .chk("송금")
+                .memberName(ReceiveAccount.getMember().getMemberName())
+                .myAccountNumber(SendAccount.getAccountNumber())
+                .accountNumber(ReceiveAccount.getAccountNumber())           //받는 사람의 계좌 정보
+                .updateDate(LocalDateTime.now())                                    //해당 날짜
+                .build();
+
+
+        History SendHistory = historyService.dtoToEntity(SendHistoryDTO);
+        historyRepository.save(SendHistory);
+
+
+        //받는 사람의 계좌 이체 내역 추가
+        HistoryDTO ReceiveHistoryDTO = HistoryDTO.builder()
+                .balance(ReceiveAccount.getBalance() + transferDTO.getSendBalance())
+                .money(transferDTO.getSendBalance())
+                .chk("입금")
+                .accountNumber(SendAccount.getAccountNumber())
+                .memberName(SendAccount.getMember().getMemberName())
+                .myAccountNumber(ReceiveAccount.getAccountNumber())
+                .updateDate(LocalDateTime.now())
+                .build();
+
+
+
+        History ReceiveHistory = historyService.dtoToEntity(ReceiveHistoryDTO);
+        historyRepository.save(ReceiveHistory);
+
+
+
+        SendAccount.MinusBalance(transferDTO.getSendBalance());
+        accountRepository.save(SendAccount);
+
+
+        ReceiveAccount.PlusBalance(transferDTO.getSendBalance());
+        accountRepository.save(ReceiveAccount);
+
+        }catch (Exception e){
+            result =false;
+        }
+
+
+        return result;
+    }
+
+
+
+
+</details>
+
+
+
+
+
+<HR>
+
 <H3>계좌 상세 페이지</H3>
 <BR>
 
@@ -125,33 +261,6 @@
  </summary> 
  
 <img src='https://github.com/oals/PortfolioBank/assets/136543676/95142535-a473-4b82-b4f2-273f8cf78245'>
-</details>
-
-
-<br>
-<br>
-
-
-
-
-
-
-
-<HR>
-
-<H3>계좌 이체 페이지</H3>
-<BR>
-
-![개인 프로젝트 bank 계좌 이체 페이지1](https://github.com/oals/PortfolioBank/assets/136543676/5318187c-6293-4f95-a91c-358576b57034)
-
-<br>
-<br>
-<details>
- <summary> 계좌 이체 페이지 플로우 차트
- 
- </summary> 
- 
-<img src='https://github.com/oals/PortfolioBank/assets/136543676/41d86553-b8c2-4398-985a-bbb63da439b1'>
 </details>
 
 
