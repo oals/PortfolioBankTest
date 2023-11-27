@@ -34,11 +34,27 @@
 
 ![개인 프로젝트 bank 메인 페이지](https://github.com/oals/PortfolioBank/assets/136543676/c8a1a3a4-6a7b-4514-b1cb-6861596c772a)
 
-<UL>
- <LI>등록된 계좌의 예금을 확인 할 수 있고 가입된 적금의 상태를 확인 할 수 있습니다.</LI>
-</UL>
 
-<HR>
+
+<br>
+<br>
+<details>
+ <summary> 메인 페이지 플로우 차트
+ 
+ </summary> 
+ 
+<img src='https://github.com/oals/PortfolioBank/assets/136543676/f559e884-030d-40f9-b996-98f5dd9cad50'>
+</details>
+
+
+
+<br>
+<br>
+
+
+
+
+
 
 <H3>계좌 상세 페이지</H3>
 <BR>
@@ -53,12 +69,27 @@
 
 ![개인 프로젝트 bank 계좌 상세 페이지2](https://github.com/oals/PortfolioBank/assets/136543676/a44b4ddf-223e-40de-8f71-64336e7f1db3)
 
-<BR>
-<UL>
- <LI>계좌의 입금, 송금, 적금 내역을 확인 할 수 있습니다  </LI>
-  <LI>등록된 나의 다른 계좌 목록을 볼 수 있습니다. </LI>
-</UL>
-<BR>
+
+
+<br>
+<br>
+<details>
+ <summary> 계좌 상세 페이지 플로우 차트
+ 
+ </summary> 
+ 
+<img src='https://github.com/oals/PortfolioBank/assets/136543676/ad209e69-06b6-43f0-95d2-00e4940fca14'>
+</details>
+
+
+<br>
+<br>
+
+
+
+
+
+
 
 
 
@@ -84,6 +115,26 @@
  <LI>계좌 번호는 16자리만 등록 가능 합니다. </LI>
 </UL>
 <BR>
+
+
+<br>
+<br>
+<details>
+ <summary> 계좌 등록 페이지 플로우 차트
+ 
+ </summary> 
+ 
+<img src='https://github.com/oals/PortfolioBank/assets/136543676/95142535-a473-4b82-b4f2-273f8cf78245'>
+</details>
+
+
+<br>
+<br>
+
+
+
+
+
 
 
 <HR>
